@@ -9,51 +9,52 @@ DROP TABLE Letadlo;
 DROP TABLE Typ_Letadla;
 DROP TABLE Terminal;
 
-
-
 CREATE TABLE Terminal (
-	id_terminalu	INT NOT NULL,
-	nazev			VARCHAR(200),
-	CONSTRAINT	PK_Terminal PRIMARY KEY (id_terminalu)
+	id_terminalu	INT GENERATED ALWAYS AS IDENTITY,
+	nazev			VARCHAR(200) NOT NULL,
+	CONSTRAINT PK_Terminal PRIMARY KEY (id_terminalu),
+    CONSTRAINT UQ_TerminalNazev UNIQUE (nazev)
 );
 
 CREATE TABLE Typ_Letadla (
-    id_typu     	INT NOT NULL,
+    id_typu     	INT GENERATED ALWAYS AS IDENTITY,
     vyrobce     	VARCHAR(200),
-    nazev       	VARCHAR(200),
+    nazev       	VARCHAR(200) NOT NULL,
     CONSTRAINT PK_Typ_Letadla PRIMARY KEY (id_typu)
 );
 
 CREATE TABLE Letadlo (
-    id_letadla      INT NOT NULL,
+    id_letadla      INT GENERATED ALWAYS AS IDENTITY,
     pocet_posadky   INT NOT NULL,
-    datum_vyroby    DATE,
-    datum_revize    DATE,
+    datum_vyroby    DATE NOT NULL,
+    datum_revize    DATE NOT NULL,
     id_typu			INT NOT NULL,
     CONSTRAINT FK_LetadloTyp_Letadla FOREIGN KEY (id_typu) REFERENCES Typ_Letadla (id_typu),
     CONSTRAINT PK_Letadlo PRIMARY KEY (id_letadla)
 );
 
 CREATE TABLE Trida (
-	id_tridy		INT NOT NULL,
-	nazev			VARCHAR(200),
+	id_tridy		INT GENERATED ALWAYS AS IDENTITY,
+	nazev			VARCHAR(200) NOT NULL,
 	CONSTRAINT	PK_Trida PRIMARY KEY (id_tridy)
+    -- UNIQUE nazev??
 );
 
 CREATE TABLE Gate (
-	id_gate			INT NOT NULL,
-	nazev			VARCHAR(200),
+	id_gate			INT GENERATED ALWAYS AS IDENTITY,
+	nazev			VARCHAR(200) NOT NULL,
 	id_terminalu	INT NOT NULL,
 	CONSTRAINT FK_GateTerminal FOREIGN KEY (id_terminalu) REFERENCES Terminal (id_terminalu),
-	CONSTRAINT PK_Gate PRIMARY KEY (id_gate)
+	CONSTRAINT PK_Gate PRIMARY KEY (id_gate),
+    CONSTRAINT UQ_GateNazevTerminal UNIQUE (nazev, id_terminalu)
 );
 
 CREATE TABLE Let (
-    id_letu         INT NOT NULL,
-    datum_odletu    DATE,
-    cas_odletu      TIMESTAMP,
-    doba_letu       TIMESTAMP,
-    destinace       VARCHAR(200),
+    id_letu         INT GENERATED ALWAYS AS IDENTITY,
+    datum_odletu    DATE NOT NULL,
+    cas_odletu      TIMESTAMP NOT NULL,
+    doba_letu       TIMESTAMP NOT NULL,
+    destinace       VARCHAR(200) NOT NULL,
     id_letadla		INT NOT NULL,
     id_gate			INT NOT NULL,
     CONSTRAINT FK_LetLetadlo FOREIGN KEY (id_letadla) REFERENCES Letadlo (id_letadla),
@@ -62,20 +63,22 @@ CREATE TABLE Let (
 );
 
 CREATE TABLE Misto (
-	id_mista		INT NOT NULL,
-	cislo_mista		INT,
-	umistneni		VARCHAR(1),
+	id_mista		INT GENERATED ALWAYS AS IDENTITY,
+	cislo_mista		INT NOT NULL,
+	umisteni		VARCHAR(1) NOT NULL,
 	id_letadla		INT NOT NULL,
 	id_tridy		INT NOT NULL,
 	CONSTRAINT FK_MistoLetadlo FOREIGN KEY (id_letadla) REFERENCES Letadlo (id_letadla),
 	CONSTRAINT FK_MistoTrida FOREIGN KEY (id_tridy) REFERENCES Trida (id_tridy),
-	CONSTRAINT PK_Misto PRIMARY KEY (id_mista)
+	CONSTRAINT PK_Misto PRIMARY KEY (id_mista),
+    CONSTRAINT CH_MistoUmisteni CHECK (umisteni IN ('Okno', 'Ulicka', 'Stred')),
+    CONSTRAINT UQ_LetadloTridaMisto UNIQUE (cislo_mista, id_letadla, id_tridy)
 );
 
 CREATE TABLE Letenka (
 	id_letenky		INT NOT NULL,
-	jmeno			VARCHAR(200),
-	prijmeni		VARCHAR(200),
+	jmeno			VARCHAR(200) NOT NULL,
+	prijmeni		VARCHAR(200) NOT NULL,
 	id_letu			INT NOT NULL,
 	id_tridy		INT NOT NULL,
 	CONSTRAINT FK_LetenkaLet FOREIGN KEY (id_letu) REFERENCES Let (id_letu),
@@ -85,9 +88,9 @@ CREATE TABLE Letenka (
 
 CREATE TABLE Palubni_vstupenka (
 	id_palubni_vstupenky		INT NOT NULL,
-	jmeno			VARCHAR(200),
-	prijmeni		VARCHAR(200),
-	id_mista		INT NOT NULL,
+	jmeno			VARCHAR(200) NOT NULL,
+	prijmeni		VARCHAR(200) NOT NULL,
+	id_mista		INT,
 	id_letenky		INT NOT NULL,
 	CONSTRAINT FK_Palubni_vstupenkaMisto FOREIGN KEY (id_mista) REFERENCES Misto (id_mista),
 	CONSTRAINT FK_Palubni_VstupenkaLetenka FOREIGN KEY (id_letenky) REFERENCES Letenka (id_letenky),
@@ -98,5 +101,30 @@ CREATE TABLE Typ_LetadlaGate (
 	id_typu			INT NOT NULL,
 	id_gate			INT NOT NULL,
     CONSTRAINT FK_Typ_LetadlaGateGate FOREIGN KEY(id_gate) REFERENCES Gate (id_gate),
-	CONSTRAINT PK_Typ_LetadlaGate PRIMARY KEY (id_typu)
+    CONSTRAINT FK_Typ_LetadlaGateTyp FOREIGN KEY(id_typu) REFERENCES Typ_letadla (id_typu),
+	CONSTRAINT PK_Typ_LetadlaGate PRIMARY KEY (id_typu, id_gate)
 );
+
+
+-- VLOZENI UKAZKOVYCH DAT
+INSERT INTO Terminal (nazev) VALUES ('Terminal Pepa');
+INSERT INTO Terminal (nazev) VALUES ('Terminal Franta');
+
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('1A', 1);
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('1B', 1);
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('1C', 1);
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('2A', 1);
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('2B', 1);
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('1A', 2);
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('1B', 2);
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('1C', 2);
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('1D', 2);
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('2A', 2);
+INSERT INTO Gate (nazev, id_terminalu) VALUES ('2B', 2);
+
+INSERT INTO Typ_letadla (nazev, vyrobce) VALUES ('747', 'Boeing');
+INSERT INTO Typ_letadla (nazev, vyrobce) VALUES ('A320', 'Airbus');
+
+INSERT INTO Trida (nazev) VALUES ('Economy');
+INSERT INTO Trida (nazev) VALUES ('Business');
+INSERT INTO Trida (nazev) VALUES ('Premium');
