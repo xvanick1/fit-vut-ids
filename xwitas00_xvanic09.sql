@@ -129,3 +129,13 @@ INSERT INTO Typ_letadla (id_typu, nazev, vyrobce) VALUES (2, 'A320', 'Airbus');
 INSERT INTO Trida (id_tridy, nazev) VALUES (1, 'Economy');
 INSERT INTO Trida (id_tridy, nazev) VALUES (2, 'Business');
 INSERT INTO Trida (id_tridy, nazev) VALUES (3, 'Premium');
+
+INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (1,1);
+INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (4,1);
+INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (6,1);
+INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (9,1);
+INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (10,1);
+INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (2,2);
+INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (5,2);
+INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (7,2);
+INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (11,2);
