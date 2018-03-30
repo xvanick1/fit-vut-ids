@@ -65,8 +65,8 @@ CREATE TABLE Let (
 
 CREATE TABLE Misto (
 	id_mista		INT NOT NULL,
-	cislo_mista		INT NOT NULL,
-	umisteni		VARCHAR(1) NOT NULL,
+	cislo_mista		INT, --ak je NULL tak SITTING FREE
+	umisteni		VARCHAR(6) NOT NULL,
 	id_letadla		INT NOT NULL,
 	id_tridy		INT NOT NULL,
 	CONSTRAINT FK_MistoLetadlo FOREIGN KEY (id_letadla) REFERENCES Letadlo (id_letadla),
@@ -126,9 +126,9 @@ INSERT INTO Gate (id_gate, nazev, id_terminalu) VALUES (11, '2B', 2);
 INSERT INTO Typ_letadla (id_typu, nazev, vyrobce) VALUES (1, '747', 'Boeing');
 INSERT INTO Typ_letadla (id_typu, nazev, vyrobce) VALUES (2, 'A320', 'Airbus');
 
-INSERT INTO Trida (id_tridy, nazev) VALUES (1, 'Economy');
+INSERT INTO Trida (id_tridy, nazev) VALUES (3, 'Economy');
 INSERT INTO Trida (id_tridy, nazev) VALUES (2, 'Business');
-INSERT INTO Trida (id_tridy, nazev) VALUES (3, 'Premium');
+INSERT INTO Trida (id_tridy, nazev) VALUES (1, 'Premium');
 
 INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (1,1);
 INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (4,1);
@@ -139,3 +139,31 @@ INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (2,2);
 INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (5,2);
 INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (7,2);
 INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (11,2);
+
+INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (1,5,(TO_DATE('2003/05/03', 'yyyy/mm/dd')),(TO_DATE('2018/02/20', 'yyyy/mm/dd')),1);
+INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (5,6,(TO_DATE('2006/06/09', 'yyyy/mm/dd')),(TO_DATE('2018/03/03', 'yyyy/mm/dd')),2);
+INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (2,5,(TO_DATE('2004/05/03', 'yyyy/mm/dd')),(TO_DATE('2018/02/03', 'yyyy/mm/dd')),1);
+INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (4,6,(TO_DATE('2012/06/09', 'yyyy/mm/dd')),(TO_DATE('2018/02/10', 'yyyy/mm/dd')),2);
+INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (6,6,(TO_DATE('2012/05/03', 'yyyy/mm/dd')),(TO_DATE('2018/02/04', 'yyyy/mm/dd')),2);
+INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (3,5,(TO_DATE('2003/06/09', 'yyyy/mm/dd')),(TO_DATE('2018/03/06', 'yyyy/mm/dd')),1);
+
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (026,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),DOPLNIT TIMESTAMP,DOPLNIT TIMESTAMP,BRNO,3,4);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (012,(TO_DATE('2018/01/04', 'yyyy/mm/dd')),DOPLNIT TIMESTAMP,DOPLNIT TIMESTAMP,VARSAVA,3,1);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (212,(TO_DATE('2018/03/16', 'yyyy/mm/dd')),DOPLNIT TIMESTAMP,DOPLNIT TIMESTAMP,BRATISLAVA,4,4);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (812,(TO_DATE('2018/04/03', 'yyyy/mm/dd')),DOPLNIT TIMESTAMP,DOPLNIT TIMESTAMP,PRAGUE,3,2);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (095,(TO_DATE('2018/02/12', 'yyyy/mm/dd')),DOPLNIT TIMESTAMP,DOPLNIT TIMESTAMP,BUDAPEST,3,5);
+
+INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (1,3,'Okno',5,1);
+INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (6,3,'Okno',1,1);
+INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (11,3,'Stred',4,2);
+INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (16,3,'Ulicka',6,2);
+INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (22,3,'Stred',6,3);
+
+INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (1,'Pavel','Matousek',212,3);
+INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (2,'Jan','Hornak',095,2);
+INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (3,'Frantisek','Ondrasek',212,2);
+
+INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (1,'Pavel','Matousek',1,1);
+INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (2,'Jan','Hornak',11,2);
+INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (3,'Frantisek','Ondrasek',22,3);
+
