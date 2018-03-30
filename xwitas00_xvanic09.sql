@@ -147,11 +147,11 @@ INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_ty
 INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (6,6,(TO_DATE('2012/05/03', 'yyyy/mm/dd')),(TO_DATE('2018/02/04', 'yyyy/mm/dd')),2);
 INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (3,5,(TO_DATE('2003/06/09', 'yyyy/mm/dd')),(TO_DATE('2018/03/06', 'yyyy/mm/dd')),1);
 
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (026,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),DOPLNIT TIMESTAMP,DOPLNIT TIMESTAMP,BRNO,3,4);
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (012,(TO_DATE('2018/01/04', 'yyyy/mm/dd')),DOPLNIT TIMESTAMP,DOPLNIT TIMESTAMP,VARSAVA,3,1);
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (212,(TO_DATE('2018/03/16', 'yyyy/mm/dd')),DOPLNIT TIMESTAMP,DOPLNIT TIMESTAMP,BRATISLAVA,4,4);
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (812,(TO_DATE('2018/04/03', 'yyyy/mm/dd')),DOPLNIT TIMESTAMP,DOPLNIT TIMESTAMP,PRAGUE,3,2);
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (095,(TO_DATE('2018/02/12', 'yyyy/mm/dd')),DOPLNIT TIMESTAMP,DOPLNIT TIMESTAMP,BUDAPEST,3,5);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (1,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('08:00', 'HH24:MI'),TO_TIMESTAMP('01:00', 'HH24:MI'),'BRNO',3,4);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (2,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('03:00', 'HH24:MI'),TO_TIMESTAMP('03:30', 'HH24:MI'),'VARSAVA',3,1);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (3,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('12:00', 'HH24:MI'),TO_TIMESTAMP('00:50', 'HH24:MI'),'BRATISLAVA',4,4);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (4,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('07:00', 'HH24:MI'),TO_TIMESTAMP('12:00', 'HH24:MI'),'PRAGUE',3,2);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (5,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('23:00', 'HH24:MI'),TO_TIMESTAMP('02:00', 'HH24:MI'),'BUDAPEST',3,5);
 
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (1,3,'Okno',5,1);
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (6,3,'Okno',1,1);
@@ -159,9 +159,9 @@ INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (16,3,'Ulicka',6,2);
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (22,3,'Stred',6,3);
 
-INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (1,'Pavel','Matousek',212,3);
-INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (2,'Jan','Hornak',095,2);
-INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (3,'Frantisek','Ondrasek',212,2);
+INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (1,'Pavel','Matousek',1,3);
+INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (2,'Jan','Hornak',2,2);
+INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (3,'Frantisek','Ondrasek',1,2);
 
 INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (1,'Pavel','Matousek',1,1);
 INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (2,'Jan','Hornak',11,2);
