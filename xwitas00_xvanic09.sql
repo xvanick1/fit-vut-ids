@@ -38,7 +38,6 @@ CREATE TABLE Trida (
 	id_tridy		INT NOT NULL,
 	nazev			VARCHAR(200) NOT NULL,
 	CONSTRAINT	PK_Trida PRIMARY KEY (id_tridy)
-    -- UNIQUE nazev??
 );
 
 CREATE TABLE Gate (
@@ -141,17 +140,17 @@ INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (7,2);
 INSERT INTO TYP_LETADLAGATE (id_gate, id_typu) VALUES (11,2);
 
 INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (1,5,(TO_DATE('2003/05/03', 'yyyy/mm/dd')),(TO_DATE('2018/02/20', 'yyyy/mm/dd')),1);
-INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (5,6,(TO_DATE('2006/06/09', 'yyyy/mm/dd')),(TO_DATE('2018/03/03', 'yyyy/mm/dd')),2);
-INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (2,5,(TO_DATE('2004/05/03', 'yyyy/mm/dd')),(TO_DATE('2018/02/03', 'yyyy/mm/dd')),1);
-INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (4,6,(TO_DATE('2012/06/09', 'yyyy/mm/dd')),(TO_DATE('2018/02/10', 'yyyy/mm/dd')),2);
-INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (6,6,(TO_DATE('2012/05/03', 'yyyy/mm/dd')),(TO_DATE('2018/02/04', 'yyyy/mm/dd')),2);
+INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (2,7,(TO_DATE('2004/05/03', 'yyyy/mm/dd')),(TO_DATE('2018/02/03', 'yyyy/mm/dd')),1);
 INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (3,5,(TO_DATE('2003/06/09', 'yyyy/mm/dd')),(TO_DATE('2018/03/06', 'yyyy/mm/dd')),1);
+INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (4,6,(TO_DATE('2012/06/09', 'yyyy/mm/dd')),(TO_DATE('2018/02/10', 'yyyy/mm/dd')),2);
+INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (5,8,(TO_DATE('2006/06/09', 'yyyy/mm/dd')),(TO_DATE('2018/03/03', 'yyyy/mm/dd')),2);
+INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (6,6,(TO_DATE('2012/05/03', 'yyyy/mm/dd')),(TO_DATE('2018/02/04', 'yyyy/mm/dd')),2);
 
 INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (1,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('08:00', 'HH24:MI'),TO_TIMESTAMP('01:00', 'HH24:MI'),'BRNO',3,4);
 INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (2,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('03:00', 'HH24:MI'),TO_TIMESTAMP('03:30', 'HH24:MI'),'VARSAVA',3,1);
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (3,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('12:00', 'HH24:MI'),TO_TIMESTAMP('00:50', 'HH24:MI'),'BRATISLAVA',4,4);
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (4,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('07:00', 'HH24:MI'),TO_TIMESTAMP('12:00', 'HH24:MI'),'PRAGUE',3,2);
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (5,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('23:00', 'HH24:MI'),TO_TIMESTAMP('02:00', 'HH24:MI'),'BUDAPEST',3,5);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (3,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('12:00', 'HH24:MI'),TO_TIMESTAMP('00:50', 'HH24:MI'),'BRATISLAVA',4,5);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (4,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('07:00', 'HH24:MI'),TO_TIMESTAMP('12:00', 'HH24:MI'),'PRAGUE',3,10);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (5,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('23:00', 'HH24:MI'),TO_TIMESTAMP('02:00', 'HH24:MI'),'BUDAPEST',6,5);
 
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (1,3,'Okno',5,1);
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (6,3,'Okno',1,1);
