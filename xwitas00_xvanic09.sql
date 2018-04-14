@@ -174,3 +174,9 @@ SELECT l.jmeno, l.prijmeni, l.id_letu, l.id_letenky, pv.id_mista, pv.id_palubni_
 
 -- Vypise seznam odletu vcetne data, casu, terminalu a gate (spojeni 3 tabulek)
 SELECT id_letu, destinace, to_char(datum_odletu, 'DD.MM.YYYY') as datum, to_char(cas_odletu, 'HH24:MI') as cas, terminal.nazev as terminal, gate.nazev FROM Let, Gate, Terminal WHERE let.id_gate=gate.id_gate AND gate.id_terminalu=terminal.id_terminalu ORDER BY datum_odletu,cas_odletu;
+
+-- Vypise pocet cestujicich na jednotlivych letech
+SELECT id_letu, COUNT(*) as pocet_cestujicich FROM Let NATURAL JOIN Letenka GROUP BY id_letu;
+
+-- Vypise pocet cestujicih v jednotlivych dnech
+SELECT datum_odletu, COUNT(id_letenky) as pocet FROM Let NATURAL LEFT JOIN Letenka GROUP BY datum_odletu ORDER BY datum_odletu;
