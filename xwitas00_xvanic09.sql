@@ -166,3 +166,11 @@ INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, 
 INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (2,'Jan','Hornak',11,2);
 INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (3,'Frantisek','Ondrasek',22,3);
 
+-- Vypise cestujici, kteri se neodbavili
+SELECT DISTINCT jmeno, prijmeni, id_letu FROM Letenka L NATURAL LEFT JOIN Palubni_vstupenka WHERE id_letenky=null;
+
+-- 
+SELECT l.jmeno, l.prijmeni, l.id_letu, l.id_letenky, pv.id_mista, pv.id_palubni_vstupenky FROM Letenka l INNER JOIN Palubni_vstupenka pv ON l.id_letenky = pv.id_letenky;
+
+-- Vypise seznam odletu vcetne data, casu, terminalu a gate (spojeni 3 tabulek)
+SELECT id_letu, destinace, to_char(datum_odletu, 'DD.MM.YYYY') as datum, to_char(cas_odletu, 'HH24:MI') as cas, terminal.nazev as terminal, gate.nazev FROM Let, Gate, Terminal WHERE let.id_gate=gate.id_gate AND gate.id_terminalu=terminal.id_terminalu ORDER BY datum_odletu,cas_odletu;
