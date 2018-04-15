@@ -148,9 +148,9 @@ INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_ty
 
 INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (1,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('08:00', 'HH24:MI'),TO_TIMESTAMP('01:00', 'HH24:MI'),'BRNO',3,4);
 INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (2,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('03:00', 'HH24:MI'),TO_TIMESTAMP('03:30', 'HH24:MI'),'VARSAVA',3,1);
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (3,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('12:00', 'HH24:MI'),TO_TIMESTAMP('00:50', 'HH24:MI'),'BRATISLAVA',4,5);
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (4,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('07:00', 'HH24:MI'),TO_TIMESTAMP('12:00', 'HH24:MI'),'PRAGUE',3,10);
-INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (5,(TO_DATE('2018/01/06', 'yyyy/mm/dd')),TO_TIMESTAMP('23:00', 'HH24:MI'),TO_TIMESTAMP('02:00', 'HH24:MI'),'BUDAPEST',6,5);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (3,(TO_DATE('2018/01/07', 'yyyy/mm/dd')),TO_TIMESTAMP('12:00', 'HH24:MI'),TO_TIMESTAMP('00:50', 'HH24:MI'),'BRATISLAVA',4,5);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (4,(TO_DATE('2018/01/08', 'yyyy/mm/dd')),TO_TIMESTAMP('07:00', 'HH24:MI'),TO_TIMESTAMP('12:00', 'HH24:MI'),'PRAGUE',3,10);
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (5,(TO_DATE('2018/01/09', 'yyyy/mm/dd')),TO_TIMESTAMP('23:00', 'HH24:MI'),TO_TIMESTAMP('02:00', 'HH24:MI'),'BUDAPEST',6,5);
 
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (1,3,'Okno',5,1);
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (6,3,'Okno',1,1);
@@ -180,3 +180,9 @@ SELECT id_letu, COUNT(*) as pocet_cestujicich FROM Let NATURAL JOIN Letenka GROU
 
 -- Vypise pocet cestujicih v jednotlivych dnech
 SELECT datum_odletu, COUNT(id_letenky) as pocet FROM Let NATURAL LEFT JOIN Letenka GROUP BY datum_odletu ORDER BY datum_odletu;
+
+-- Vypise pro konkretni letadlo sezname gate z kterych muze letet
+SELECT nazev FROM GATE G WHERE EXISTS (SELECT id_gate FROM TYP_LETADLAGATE T NATURAL JOIN Letadlo L WHERE T.id_gate=G.id_gate and L.id_letadla=1);
+
+-- Vypise pro konkretni gate sezname letadel ktere z neho muzou letet
+SELECT L.id_letadla FROM Letadlo L WHERE id_typu IN (SELECT T.id_typu FROM TYP_LETADLAGATE T WHERE T.id_gate=1);
