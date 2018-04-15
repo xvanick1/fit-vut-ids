@@ -169,7 +169,7 @@ INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, 
 -- Vypise cestujici, kteri se neodbavili
 SELECT DISTINCT jmeno, prijmeni, id_letu FROM Letenka L NATURAL LEFT JOIN Palubni_vstupenka WHERE id_letenky=null;
 
--- 
+-- Vypise cestujici vcetne letu a mista
 SELECT l.jmeno, l.prijmeni, l.id_letu, l.id_letenky, pv.id_mista, pv.id_palubni_vstupenky FROM Letenka l INNER JOIN Palubni_vstupenka pv ON l.id_letenky = pv.id_letenky;
 
 -- Vypise seznam odletu vcetne data, casu, terminalu a gate (spojeni 3 tabulek)
