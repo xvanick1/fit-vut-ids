@@ -200,3 +200,6 @@ SELECT nazev FROM GATE G WHERE EXISTS (SELECT id_gate FROM TYP_LETADLAGATE T NAT
 
 -- Vypise pro konkretni gate sezname letadel ktere z neho muzou letet
 SELECT L.id_letadla FROM Letadlo L WHERE id_typu IN (SELECT T.id_typu FROM TYP_LETADLAGATE T WHERE T.id_gate=1);
+
+-- Pokus o vlozeni neplatneho zaznamu do Letu, dane letadlo nemuze letet ze zadaneho gate
+INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (6,(TO_DATE('2018/01/09', 'yyyy/mm/dd')),TO_TIMESTAMP('23:00', 'HH24:MI'),TO_TIMESTAMP('02:00', 'HH24:MI'),'BUDAPEST',6,1);
