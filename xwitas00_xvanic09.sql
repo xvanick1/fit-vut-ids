@@ -231,4 +231,4 @@ END;
 /
 
 -- Vypis upravenych destinaci
-SELECT DISTINCT destinace FROM let ORDER BY destinace ASC;;
+SELECT DISTINCT destinace FROM let ORDER BY destinace ASC;
