@@ -105,6 +105,20 @@ CREATE TABLE Typ_LetadlaGate (
 	CONSTRAINT PK_Typ_LetadlaGate PRIMARY KEY (id_typu, id_gate)
 );
 
+-- Osetreni ze Letadlo muze letet z daneho Gate v tabulce Let
+CREATE OR REPLACE TRIGGER let_LetadloGate
+BEFORE INSERT OR UPDATE
+	ON let FOR EACH ROW
+DECLARE
+	gate_exc EXCEPTION;
+	n_count	 NUMBER (1);
+BEGIN
+	SELECT count(*) INTO n_count FROM Letadlo NATURAL JOIN TYP_LETADLAGATE WHERE id_letadla = :NEW.id_letadla AND id_gate = :NEW.id_gate;
+	IF n_count < 1 THEN
+		RAISE gate_exc;
+	END IF;
+END;
+/
 
 -- VLOZENI UKAZKOVYCH DAT
 INSERT INTO Terminal (id_terminalu, nazev) VALUES (1, 'Terminal Pepa');
