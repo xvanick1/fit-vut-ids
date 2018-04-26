@@ -105,6 +105,8 @@ CREATE TABLE Typ_LetadlaGate (
 	CONSTRAINT PK_Typ_LetadlaGate PRIMARY KEY (id_typu, id_gate)
 );
 
+
+-- Triggery pro skript c. 4
 -- Osetreni ze Letadlo muze letet z daneho Gate v tabulce Let
 CREATE OR REPLACE TRIGGER let_LetadloGate
 BEFORE INSERT OR UPDATE
@@ -201,5 +203,32 @@ SELECT nazev FROM GATE G WHERE EXISTS (SELECT id_gate FROM TYP_LETADLAGATE T NAT
 -- Vypise pro konkretni gate sezname letadel ktere z neho muzou letet
 SELECT L.id_letadla FROM Letadlo L WHERE id_typu IN (SELECT T.id_typu FROM TYP_LETADLAGATE T WHERE T.id_gate=1);
 
+-- Skript c. 4
 -- Pokus o vlozeni neplatneho zaznamu do Letu, dane letadlo nemuze letet ze zadaneho gate
 INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (6,(TO_DATE('2018/01/09', 'yyyy/mm/dd')),TO_TIMESTAMP('23:00', 'HH24:MI'),TO_TIMESTAMP('02:00', 'HH24:MI'),'BUDAPEST',6,1);
+
+CREATE OR REPLACE PROCEDURE aktualizuj_destinaci (destinace_nova LET.DESTINACE%TYPE, destinace_stara LET.DESTINACE%TYPE) IS
+    CURSOR c_lety IS 
+        SELECT id_letu, destinace FROM LET WHERE destinace_stara = LET.DESTINACE;
+    c_id LET.ID_LETU%TYPE;
+    c_des LET.DESTINACE%TYPE;
+BEGIN
+    OPEN c_lety;
+    LOOP
+        FETCH c_lety INTO c_id, c_des;
+        EXIT WHEN c_lety%NOTFOUND;
+        UPDATE LET SET LET.DESTINACE = destinace_nova WHERE LET.ID_LETU = c_id;
+        dbms_output.put_line(c_id || ': ' || c_des || ' -> ' || destinace_nova); 
+    END LOOP;
+    CLOSE c_lety;
+END;
+/
+
+-- Vypis nezmenenych destinaci
+BEGIN
+    aktualizuj_destinaci('PRAHA', 'PRAGUE');
+END;
+/
+
+-- Vypis upravenych destinaci
+SELECT DISTINCT destinace FROM let ORDER BY destinace ASC;;
