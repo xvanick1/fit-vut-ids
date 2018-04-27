@@ -232,3 +232,15 @@ END;
 
 -- Vypis upravenych destinaci
 SELECT DISTINCT destinace FROM let ORDER BY destinace ASC;
+
+-- Vytvoreni indexu pro pocitani cestujicich v jednotlivych dnech
+CREATE INDEX datum_let ON let (datum_odletu, id_letu);
+CREATE INDEX letenka_let ON letenka (id_letenky, id_letu);
+
+-- DROP INDEX datum_let;
+-- DROP INDEX letenka_let;
+
+EXPLAIN PLAN SET STATEMENT_ID = 'st_datum_odletu' FOR
+    SELECT datum_odletu, COUNT(id_letenky) as pocet FROM Let NATURAL LEFT JOIN Letenka WHERE datum_odletu BETWEEN TO_DATE('2018/01/01', 'yyyy/mm/dd') AND TO_DATE('2018/01/07', 'yyyy/mm/dd') GROUP BY datum_odletu ORDER BY datum_odletu;
+SELECT PLAN_TABLE_OUTPUT 
+  FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'st_datum_odletu','TYPICAL'));
