@@ -174,9 +174,20 @@ INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (16,3,'Ulicka',6,2);
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (22,3,'Stred',6,3);
 
-INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (1,'Pavel','Matousek',1,3);
-INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (2,'Jan','Hornak',2,2);
-INSERT INTO Letenka (id_letenky, jmeno, prijmeni, id_letu, id_tridy) VALUES (3,'Frantisek','Ondrasek',1,2);
+-- Vytvoreni sekvence pro generovani pk letenky
+CREATE SEQUENCE LETENKA_ID_SEQUENCE;
+
+-- Generovani pk postupnym inkrementovanim
+CREATE OR REPLACE TRIGGER auto_inc_letenka_id
+ BEFORE INSERT ON Letenka FOR EACH ROW
+ BEGIN SELECT LETENKA_ID_SEQUENCE.nextval
+ INTO :NEW.id_letenky FROM dual;
+ END;
+ /
+
+INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Pavel','Matousek',1,3);
+INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Jan','Hornak',2,2);
+INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Frantisek','Ondrasek',1,2);
 
 INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (1,'Pavel','Matousek',1,1);
 INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (2,'Jan','Hornak',11,2);
