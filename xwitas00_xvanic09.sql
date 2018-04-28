@@ -250,12 +250,15 @@ CREATE OR REPLACE PROCEDURE vytvor_letadlo(id_letadla in integer, pocet_posadky 
   BEGIN
     INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (id_letadla, pocet_posadky, datum_vyroby, datum_revize, id_typu);
 
-
-    FOR pocet_trid in 1..pocet_trid loop
-      FOR pocet_mist in 1..pocet_mist loop
-        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (3,'Okno',id_letadla, cislo_tridy); --vyresit cislo mista
-        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (3,'Stred',id_letadla, cislo_tridy);
-        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (3,'Ulicka',id_letadla, cislo_tridy);
+    FOR i in 1..pocet_trid loop
+      FOR j in 1..pocet_mist loop
+      	IF mod(j,3) = 0 then
+	        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (j,'Okno',id_letadla, cislo_tridy);
+	    elsif mod(j,2) = 0 then
+	        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (j,'Stred',id_letadla, cislo_tridy);
+	    else
+	        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (j,'Ulicka',id_letadla, cislo_tridy);
+	    end if;
       end loop;
     end loop;
 
