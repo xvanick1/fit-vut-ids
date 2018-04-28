@@ -8,6 +8,7 @@ DROP TABLE Trida;
 DROP TABLE Letadlo;
 DROP TABLE Typ_Letadla;
 DROP TABLE Terminal;
+DROP SEQUENCE LETENKA_ID_SEQUENCE;
 
 CREATE TABLE Terminal (
 	id_terminalu	INT NOT NULL,
@@ -270,6 +271,10 @@ BEGIN
     aktualizuj_destinaci('PRAHA', 'PRAGUE');
 END;
 /
+
+BEGIN
+  vytvor_letadlo(123, 10, 2003-05-03, 2004-05-03, 1, 3, 100, 1);
+end;
 
 -- Vypis upravenych destinaci
 SELECT DISTINCT destinace FROM let ORDER BY destinace ASC;
