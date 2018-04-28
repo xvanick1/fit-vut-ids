@@ -244,9 +244,26 @@ END;
 -- Vypis upravenych destinaci
 SELECT DISTINCT destinace FROM let ORDER BY destinace ASC;
 
+-- Vlozeni dalsich cestujicich a letu
+BEGIN
+    FOR j IN 10..60 LOOP
+        INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (j,(TO_DATE('2018/01/16', 'yyyy/mm/dd')),TO_TIMESTAMP('08:00', 'HH24:MI'),TO_TIMESTAMP('01:00', 'HH24:MI'),'BRNO',3,4);
+    
+        INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 4, 1);
+        INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 4, 2);
+        INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 4, 3);
+        
+        INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 3, 2);
+
+        INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 5, 2);
+        INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 5, 3);
+    END LOOP;
+END;
+/
+
 -- Vytvoreni indexu pro pocitani cestujicich v jednotlivych dnech
 CREATE INDEX datum_let ON let (datum_odletu, id_letu);
-CREATE INDEX letenka_let ON letenka (id_letenky, id_letu);
+CREATE INDEX letenka_let ON letenka (id_letu, id_letenky);
 
 -- DROP INDEX datum_let;
 -- DROP INDEX letenka_let;
