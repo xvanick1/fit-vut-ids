@@ -122,6 +122,17 @@ BEGIN
 END;
 /
 
+-- Vytvoreni sekvence pro generovani pk letenky
+CREATE SEQUENCE LETENKA_ID_SEQUENCE;
+
+-- Generovani pk postupnym inkrementovanim
+CREATE OR REPLACE TRIGGER auto_inc_letenka_id
+ BEFORE INSERT ON Letenka FOR EACH ROW
+ BEGIN SELECT LETENKA_ID_SEQUENCE.nextval
+ INTO :NEW.id_letenky FROM dual;
+ END;
+ /
+
 -- VLOZENI UKAZKOVYCH DAT
 INSERT INTO Terminal (id_terminalu, nazev) VALUES (1, 'Terminal Pepa');
 INSERT INTO Terminal (id_terminalu, nazev) VALUES (2, 'Terminal Franta');
@@ -174,17 +185,6 @@ INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (16,3,'Ulicka',6,2);
 INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (22,3,'Stred',6,3);
 
--- Vytvoreni sekvence pro generovani pk letenky
-CREATE SEQUENCE LETENKA_ID_SEQUENCE;
-
--- Generovani pk postupnym inkrementovanim
-CREATE OR REPLACE TRIGGER auto_inc_letenka_id
- BEFORE INSERT ON Letenka FOR EACH ROW
- BEGIN SELECT LETENKA_ID_SEQUENCE.nextval
- INTO :NEW.id_letenky FROM dual;
- END;
- /
-
 INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Pavel','Matousek',1,3);
 INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Jan','Hornak',2,2);
 INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Frantisek','Ondrasek',1,2);
@@ -219,7 +219,7 @@ SELECT L.id_letadla FROM Letadlo L WHERE id_typu IN (SELECT T.id_typu FROM TYP_L
 INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (6,(TO_DATE('2018/01/09', 'yyyy/mm/dd')),TO_TIMESTAMP('23:00', 'HH24:MI'),TO_TIMESTAMP('02:00', 'HH24:MI'),'BUDAPEST',6,1);
 
 CREATE OR REPLACE PROCEDURE aktualizuj_destinaci (destinace_nova LET.DESTINACE%TYPE, destinace_stara LET.DESTINACE%TYPE) IS
-    CURSOR c_lety IS 
+    CURSOR c_lety IS
         SELECT id_letu, destinace FROM LET WHERE destinace_stara = LET.DESTINACE;
     c_id LET.ID_LETU%TYPE;
     c_des LET.DESTINACE%TYPE;
@@ -229,10 +229,42 @@ BEGIN
         FETCH c_lety INTO c_id, c_des;
         EXIT WHEN c_lety%NOTFOUND;
         UPDATE LET SET LET.DESTINACE = destinace_nova WHERE LET.ID_LETU = c_id;
-        dbms_output.put_line(c_id || ': ' || c_des || ' -> ' || destinace_nova); 
+        dbms_output.put_line(c_id || ': ' || c_des || ' -> ' || destinace_nova);
     END LOOP;
     CLOSE c_lety;
 END;
+/
+
+-- Vytvoreni sekvence pro generovani pk mista
+CREATE SEQUENCE MISTO_ID_SEQUENCE;
+
+-- Generovani pk mista postupnym inkrementovanim
+CREATE OR REPLACE TRIGGER auto_inc_misto_id
+ BEFORE INSERT ON Misto FOR EACH ROW
+ BEGIN SELECT MISTO_ID_SEQUENCE.nextval
+ INTO :NEW.id_mista FROM dual;
+ END;
+ /
+
+CREATE OR REPLACE PROCEDURE vytvor_letadlo(id_letadla in integer, pocet_posadky in integer, datum_vyroby in date, datum_revize in date, id_typu in integer, pocet_trid in integer, pocet_mist in integer, cislo_tridy in integer) IS
+  BEGIN
+    INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (id_letadla, pocet_posadky, datum_vyroby, datum_revize, id_typu);
+
+    pocet_trid = pocet_trid;
+
+    FOR pocet_trid in 1..pocet_trid loop
+      pocet_mist = pocet_mist;
+      cislo_tridy = cislo_tridy;
+      FOR pocet_mist in 1..pocet_mist loop
+        INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (id_mista,3,'Okno',id_letadla, cislo_tridy); --vyresit cislo mista
+        INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (id_mista,3,'Stred',id_letadla, cislo_tridy);
+        INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (id_mista,3,'Ulicka',id_letadla, cislo_tridy);
+      end loop;
+      pocet_mist IS NULL;
+      cislo_tridy IS NULL;
+    end loop;
+
+  END;
 /
 
 -- Vypis nezmenenych destinaci
@@ -246,12 +278,12 @@ SELECT DISTINCT destinace FROM let ORDER BY destinace ASC;
 
 -- Vytvoreni indexu pro pocitani cestujicich v jednotlivych dnech
 CREATE INDEX datum_let ON let (datum_odletu, id_letu);
-CREATE INDEX letenka_let ON letenka (id_letenky, id_letu);
+CREATE INDEX letenka_let ON letenka (id_letu, id_letenky);
 
 -- DROP INDEX datum_let;
 -- DROP INDEX letenka_let;
 
 EXPLAIN PLAN SET STATEMENT_ID = 'st_datum_odletu' FOR
     SELECT datum_odletu, COUNT(id_letenky) as pocet FROM Let NATURAL LEFT JOIN Letenka WHERE datum_odletu BETWEEN TO_DATE('2018/01/01', 'yyyy/mm/dd') AND TO_DATE('2018/01/07', 'yyyy/mm/dd') GROUP BY datum_odletu ORDER BY datum_odletu;
-SELECT PLAN_TABLE_OUTPUT 
+SELECT PLAN_TABLE_OUTPUT
   FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'st_datum_odletu','TYPICAL'));
