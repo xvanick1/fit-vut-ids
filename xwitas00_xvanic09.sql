@@ -256,9 +256,9 @@ CREATE OR REPLACE PROCEDURE vytvor_letadlo(id_letadla in integer, pocet_posadky 
       pocet_mist = pocet_mist;
       cislo_tridy = cislo_tridy;
       FOR pocet_mist in 1..pocet_mist loop
-        INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (id_mista,3,'Okno',id_letadla, cislo_tridy); --vyresit cislo mista
-        INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (id_mista,3,'Stred',id_letadla, cislo_tridy);
-        INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (id_mista,3,'Ulicka',id_letadla, cislo_tridy);
+        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (3,'Okno',id_letadla, cislo_tridy); --vyresit cislo mista
+        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (3,'Stred',id_letadla, cislo_tridy);
+        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (3,'Ulicka',id_letadla, cislo_tridy);
       end loop;
       pocet_mist IS NULL;
       cislo_tridy IS NULL;
