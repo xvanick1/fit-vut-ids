@@ -180,11 +180,22 @@ INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_let
 INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (4,(TO_DATE('2018/01/08', 'yyyy/mm/dd')),TO_TIMESTAMP('07:00', 'HH24:MI'),TO_TIMESTAMP('12:00', 'HH24:MI'),'PRAGUE',3,10);
 INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (5,(TO_DATE('2018/01/09', 'yyyy/mm/dd')),TO_TIMESTAMP('23:00', 'HH24:MI'),TO_TIMESTAMP('02:00', 'HH24:MI'),'BUDAPEST',6,5);
 
-INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (1,3,'Okno',5,1);
-INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (6,3,'Okno',1,1);
-INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (11,3,'Stred',4,2);
-INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (16,3,'Ulicka',6,2);
-INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (22,3,'Stred',6,3);
+-- Vytvoreni sekvence pro generovani pk mista
+CREATE SEQUENCE MISTO_ID_SEQUENCE;
+
+-- Generovani pk mista postupnym inkrementovanim
+CREATE OR REPLACE TRIGGER auto_inc_misto_id
+ BEFORE INSERT ON Misto FOR EACH ROW
+ BEGIN SELECT MISTO_ID_SEQUENCE.nextval
+ INTO :NEW.id_mista FROM dual;
+ END;
+ /
+ 
+INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (NULL,3,'Okno',5,1);
+INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (NULL,3,'Okno',1,1);
+INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (NULL,3,'Stred',4,2);
+INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (NULL,3,'Ulicka',6,2);
+INSERT INTO Misto (id_mista, cislo_mista, umisteni, id_letadla, id_tridy) VALUES (NULL,3,'Stred',6,3);
 
 INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Pavel','Matousek',1,3);
 INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Jan','Hornak',2,2);
@@ -236,34 +247,25 @@ BEGIN
 END;
 /
 
--- Vytvoreni sekvence pro generovani pk mista
-CREATE SEQUENCE MISTO_ID_SEQUENCE;
+CREATE OR REPLACE PROCEDURE vytvor_letadlo(id_let in integer, posadka in integer, vyrobeno in date, revize in date, typ in integer, pocet_mist in integer, cislo_tridy in integer) IS
+BEGIN
+    INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (id_let, posadka, vyrobeno, revize, typ);
 
--- Generovani pk mista postupnym inkrementovanim
-CREATE OR REPLACE TRIGGER auto_inc_misto_id
- BEFORE INSERT ON Misto FOR EACH ROW
- BEGIN SELECT MISTO_ID_SEQUENCE.nextval
- INTO :NEW.id_mista FROM dual;
- END;
- /
-
-CREATE OR REPLACE PROCEDURE vytvor_letadlo(id_letadla in integer, pocet_posadky in integer, datum_vyroby in date, datum_revize in date, id_typu in integer, pocet_trid in integer, pocet_mist in integer, cislo_tridy in integer) IS
-  BEGIN
-    INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (id_letadla, pocet_posadky, datum_vyroby, datum_revize, id_typu);
-
-    FOR i in 1..pocet_trid loop
       FOR j in 1..pocet_mist loop
       	IF mod(j,3) = 0 then
-	        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (j,'Okno',id_letadla, cislo_tridy);
-	    elsif mod(j,2) = 0 then
-	        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (j,'Stred',id_letadla, cislo_tridy);
+	        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (j,'Okno',id_let, cislo_tridy);
+	    elsif mod(j,2) = 0 and mod(j,3) = 1 then
+	        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (j,'Stred',id_let, cislo_tridy);
 	    else
-	        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (j,'Ulicka',id_letadla, cislo_tridy);
+	        INSERT INTO Misto (cislo_mista, umisteni, id_letadla, id_tridy) VALUES (j,'Ulicka',id_let, cislo_tridy);
 	    end if;
       end loop;
-    end loop;
-
-  END;
+EXCEPTION
+WHEN DUP_VAL_ON_INDEX THEN
+    dbms_output.put_line('Duplikatni ID!');
+WHEN OTHERS THEN
+    dbms_output.put_line('error!');
+END;
 /
 
 -- Vypis nezmenenych destinaci
@@ -273,8 +275,9 @@ END;
 /
 
 BEGIN
-  vytvor_letadlo(123, 10, 2003-05-03, 2004-05-03, 1, 3, 100, 1);
+  vytvor_letadlo(130, 10, TO_DATE('2018/01/09', 'yyyy/mm/dd'), TO_DATE('2018/01/09', 'yyyy/mm/dd'), 1, 10, 1);
 end;
+/
 
 -- Vypis upravenych destinaci
 SELECT DISTINCT destinace FROM let ORDER BY destinace ASC;
