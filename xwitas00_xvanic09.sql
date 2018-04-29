@@ -9,6 +9,7 @@ DROP TABLE Letadlo;
 DROP TABLE Typ_Letadla;
 DROP TABLE Terminal;
 DROP SEQUENCE LETENKA_ID_SEQUENCE;
+DROP SEQUENCE MISTO_ID_SEQUENCE;
 
 CREATE TABLE Terminal (
 	id_terminalu	INT NOT NULL,
@@ -202,8 +203,8 @@ INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Jan','Hornak',
 INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Frantisek','Ondrasek',1,2);
 
 INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (1,'Pavel','Matousek',1,1);
-INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (2,'Jan','Hornak',11,2);
-INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (3,'Frantisek','Ondrasek',22,3);
+INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (2,'Jan','Hornak',2,2);
+INSERT INTO Palubni_vstupenka (id_palubni_vstupenky, jmeno, prijmeni, id_mista, id_letenky) VALUES (3,'Frantisek','Ondrasek',3,3);
 
 -- Vypise cestujici, kteri se neodbavili
 SELECT DISTINCT jmeno, prijmeni, id_letu FROM Letenka L NATURAL LEFT JOIN Palubni_vstupenka WHERE id_letenky=null;
@@ -247,6 +248,7 @@ BEGIN
 END;
 /
 
+-- Vytvoreni letadla a tridy
 CREATE OR REPLACE PROCEDURE vytvor_letadlo(id_let in integer, posadka in integer, vyrobeno in date, revize in date, typ in integer, pocet_mist in integer, cislo_tridy in integer) IS
 BEGIN
     INSERT INTO Letadlo (id_letadla,pocet_posadky, datum_vyroby, datum_revize, id_typu) VALUES (id_let, posadka, vyrobeno, revize, typ);
