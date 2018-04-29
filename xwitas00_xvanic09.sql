@@ -1,3 +1,6 @@
+DROP MATERIALIZED VIEW LOG ON MLOG$_LETENKA;
+DROP SEQUENCE MISTO_ID_SEQUENCE;
+DROP SEQUENCE LETENKA_ID_SEQUENCE;
 DROP TABLE Typ_LetadlaGate;
 DROP TABLE Palubni_vstupenka;
 DROP TABLE Letenka;
@@ -8,8 +11,6 @@ DROP TABLE Trida;
 DROP TABLE Letadlo;
 DROP TABLE Typ_Letadla;
 DROP TABLE Terminal;
-DROP SEQUENCE LETENKA_ID_SEQUENCE;
-DROP SEQUENCE MISTO_ID_SEQUENCE;
 
 CREATE TABLE Terminal (
 	id_terminalu	INT NOT NULL,
@@ -312,3 +313,41 @@ EXPLAIN PLAN SET STATEMENT_ID = 'st_datum_odletu' FOR
     SELECT datum_odletu, COUNT(id_letenky) as pocet FROM Let NATURAL LEFT JOIN Letenka WHERE datum_odletu BETWEEN TO_DATE('2018/01/01', 'yyyy/mm/dd') AND TO_DATE('2018/01/07', 'yyyy/mm/dd') GROUP BY datum_odletu ORDER BY datum_odletu;
 SELECT PLAN_TABLE_OUTPUT
   FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'st_datum_odletu','TYPICAL'));
+
+grant all on GATE to xwitas00;
+grant all on LET to xwitas00;
+grant all on LETADLO to xwitas00;
+grant all on LETENKA to xwitas00;
+grant all on MISTO to xwitas00;
+grant all on PALUBNI_VSTUPENKA to xwitas00;
+grant all on TERMINAL to xwitas00;
+grant all on TRIDA to xwitas00;
+grant all on TYP_LETADLA to xwitas00;
+grant all on TYP_LETADLAGATE to xwitas00;
+grant all on LETENKA_ID_SEQUENCE to xwitas00;
+grant all on MISTO_ID_SEQUENCE to xwitas00;
+grant all on AKTUALIZUJ_DESTINACI to xwitas00;
+grant all on VYTVOR_LETADLO to xwitas00;
+grant all on MLOG$_LETENKA to xwitas00;
+
+create materialized view log on LETENKA with rowid;
+create materialized view log on PALUBNI_VSTUPENKA with rowid;
+
+create materialized view Letenka_Vstupenka
+  nologging
+  cache
+  build immediate
+  refresh fast on commit
+  as
+    -- Vypise cestujici vcetne letu a mista
+    SELECT l.jmeno, l.prijmeni, l.id_letu, l.id_letenky, pv.id_mista, pv.id_palubni_vstupenky FROM Letenka l INNER JOIN Palubni_vstupenka pv ON l.id_letenky = pv.id_letenky;
+
+SELECT * FROM LETENKA NATURAL JOIN PALUBNI_VSTUPENKA;
+select plan_table_output from table(dbms_xplan.display(null,null,'basic'));
+
+-- Vlozeni noveho cestujiciho
+INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Maria','Terezia',1,2);
+
+COMMIT;
+SELECT * FROM LETENKA NATURAL JOIN PALUBNI_VSTUPENKA;
+select plan_table_output from table(dbms_xplan.display(null,null,'basic'));
