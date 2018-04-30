@@ -352,7 +352,7 @@ create materialized view Letenka_let
   enable query rewrite
   as
     -- Vypise cestujici vcetne letu a mista
-    SELECT jmeno, prijmeni, destinace, datum_odletu, cas_odletu, id_letu, let.rowid as let_rowid, letenka.rowid as letenka_rowid FROM Letenka NATURAL JOIN Let;
+    SELECT jmeno, prijmeni, destinace, datum_odletu, cas_odletu, id_letu, let.rowid as let_rowid, letenka.rowid as letenka_rowid FROM xvanic09.Letenka NATURAL JOIN xvanic09.Let;
 
 SELECT * FROM Letenka_let WHERE id_letu = 1;
 
@@ -362,4 +362,4 @@ INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Maria','Terezi
 COMMIT;
 SELECT * FROM Letenka_let WHERE id_letu = 1;
 
-grant all on LETENKA_LET to xwitas00;
+grant all on LETENKA_LET to xvanic09;
