@@ -287,33 +287,43 @@ SELECT DISTINCT destinace FROM let ORDER BY destinace ASC;
 
 -- Vlozeni dalsich cestujicich a letu
 BEGIN
-    FOR j IN 10..60 LOOP
-        INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (j,(TO_DATE('2018/01/16', 'yyyy/mm/dd')),TO_TIMESTAMP('08:00', 'HH24:MI'),TO_TIMESTAMP('01:00', 'HH24:MI'),'BRNO',3,4);
+    FOR j IN 10..100 LOOP
+        if mod(j,2) = 0 then
+            INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (j,(TO_DATE('2018/01/16', 'yyyy/mm/dd')+j),TO_TIMESTAMP('08:00', 'HH24:MI'),TO_TIMESTAMP('01:00', 'HH24:MI'),'BRNO',3,4);
+        else
+            INSERT INTO Let (id_letu, datum_odletu, cas_odletu, doba_letu, destinace, id_letadla, id_gate) VALUES (j,(TO_DATE('2018/01/03', 'yyyy/mm/dd')),TO_TIMESTAMP('08:00', 'HH24:MI'),TO_TIMESTAMP('01:00', 'HH24:MI'),'BRNO',3,4);
+        end if;
     
         INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 4, 1);
-        INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 4, 2);
-        INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 4, 3);
         
         INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 3, 2);
 
         INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 5, 2);
-        INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', 5, 3);
+
+        INSERT INTO LETENKA ( JMENO, PRIJMENI, ID_LETU, ID_TRIDY ) VALUES ( 'Jmeno', 'Prijmeni', j, 1);
     END LOOP;
 END;
 /
 
--- Vytvoreni indexu pro pocitani cestujicich v jednotlivych dnech
-CREATE INDEX datum_let ON let (datum_odletu, id_letu);
-CREATE INDEX letenka_let ON letenka (id_letu, id_letenky);
-
 -- DROP INDEX datum_let;
 -- DROP INDEX letenka_let;
-
+-- Vysvetleni dotazu bez indexu
 EXPLAIN PLAN SET STATEMENT_ID = 'st_datum_odletu' FOR
     SELECT datum_odletu, COUNT(id_letenky) as pocet FROM Let NATURAL LEFT JOIN Letenka WHERE datum_odletu BETWEEN TO_DATE('2018/01/01', 'yyyy/mm/dd') AND TO_DATE('2018/01/07', 'yyyy/mm/dd') GROUP BY datum_odletu ORDER BY datum_odletu;
 SELECT PLAN_TABLE_OUTPUT
   FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'st_datum_odletu','TYPICAL'));
 
+-- Vytvoreni indexu
+CREATE INDEX datum_let ON let (datum_odletu);
+CREATE INDEX letenka_let ON letenka (id_letu);
+
+-- Vysvetleni dotazu s indexy
+EXPLAIN PLAN SET STATEMENT_ID = 'st_datum_odletu' FOR
+    SELECT datum_odletu, COUNT(id_letenky) as pocet FROM Let NATURAL LEFT JOIN Letenka WHERE datum_odletu BETWEEN TO_DATE('2018/01/01', 'yyyy/mm/dd') AND TO_DATE('2018/01/07', 'yyyy/mm/dd') GROUP BY datum_odletu ORDER BY datum_odletu;
+SELECT PLAN_TABLE_OUTPUT
+  FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'st_datum_odletu','TYPICAL'));
+
+-- Prideleni prav
 grant all on GATE to xwitas00;
 grant all on LET to xwitas00;
 grant all on LETADLO to xwitas00;
