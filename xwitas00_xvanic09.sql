@@ -1,5 +1,6 @@
-DROP MATERIALIZED VIEW LOG ON MLOG$_LETENKA;
-DROP SEQUENCE MISTO_ID_SEQUENCE;
+DROP MATERIALIZED VIEW letenka_Vstupenka;
+DROP MATERIALIZED VIEW LOG ON PALUBNI_VSTUPENKA;
+DROP MATERIALIZED VIEW LOG ON LETENKA;DROP SEQUENCE MISTO_ID_SEQUENCE;
 DROP SEQUENCE LETENKA_ID_SEQUENCE;
 DROP TABLE Typ_LetadlaGate;
 DROP TABLE Palubni_vstupenka;
@@ -348,16 +349,15 @@ create materialized view Letenka_Vstupenka
   cache
   build immediate
   refresh fast on commit
+  enable query rewrite
   as
     -- Vypise cestujici vcetne letu a mista
-    SELECT l.jmeno, l.prijmeni, l.id_letu, l.id_letenky, pv.id_mista, pv.id_palubni_vstupenky FROM Letenka l INNER JOIN Palubni_vstupenka pv ON l.id_letenky = pv.id_letenky;
+    SELECT l.jmeno, l.prijmeni, l.id_letu, l.id_letenky, pv.id_mista, pv.id_palubni_vstupenky, l.rowid as letenka_rowid, pv.rowid as palubni_Vstupenka_rowid FROM Letenka l INNER JOIN Palubni_vstupenka pv ON l.id_letenky = pv.id_letenky;
 
-SELECT * FROM LETENKA NATURAL JOIN PALUBNI_VSTUPENKA;
-select plan_table_output from table(dbms_xplan.display(null,null,'basic'));
+SELECT * FROM Letenka_Vstupenka;
 
 -- Vlozeni noveho cestujiciho
 INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Maria','Terezia',1,2);
 
 COMMIT;
-SELECT * FROM LETENKA NATURAL JOIN PALUBNI_VSTUPENKA;
-select plan_table_output from table(dbms_xplan.display(null,null,'basic'));
+SELECT * FROM Letenka_Vstupenka;
