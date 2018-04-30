@@ -340,10 +340,9 @@ grant all on LETENKA_ID_SEQUENCE to xwitas00;
 grant all on MISTO_ID_SEQUENCE to xwitas00;
 grant all on AKTUALIZUJ_DESTINACI to xwitas00;
 grant all on VYTVOR_LETADLO to xwitas00;
-grant all on MLOG$_LETENKA to xwitas00;
 
-create materialized view log on LETENKA with rowid;
-create materialized view log on LET with rowid;
+create materialized view log on LETENKA with rowid including new values;
+create materialized view log on LET with rowid including new values;
 
 create materialized view Letenka_let
   nologging
@@ -362,3 +361,5 @@ INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Maria','Terezi
 
 COMMIT;
 SELECT * FROM Letenka_let WHERE id_letu = 1;
+
+grant all on LETENKA_LET to xwitas00;
