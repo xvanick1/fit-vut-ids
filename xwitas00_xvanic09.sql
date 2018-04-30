@@ -307,8 +307,8 @@ BEGIN
 END;
 /
 
--- DROP INDEX datum_let;
--- DROP INDEX letenka_let;
+--DROP INDEX datum_let;
+--DROP INDEX letenka_let;
 -- Vysvetleni dotazu bez indexu
 EXPLAIN PLAN SET STATEMENT_ID = 'st_datum_odletu' FOR
     SELECT datum_odletu, COUNT(id_letenky) as pocet FROM Let NATURAL LEFT JOIN Letenka WHERE datum_odletu BETWEEN TO_DATE('2018/01/01', 'yyyy/mm/dd') AND TO_DATE('2018/01/07', 'yyyy/mm/dd') GROUP BY datum_odletu ORDER BY datum_odletu;
@@ -316,8 +316,8 @@ SELECT PLAN_TABLE_OUTPUT
   FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'st_datum_odletu','TYPICAL'));
 
 -- Vytvoreni indexu
-CREATE INDEX datum_let ON let (datum_odletu);
-CREATE INDEX letenka_let ON letenka (id_letu);
+CREATE INDEX datum_let ON let (datum_odletu, id_letu);
+CREATE INDEX letenka_let ON letenka (id_letu, id_letenky);
 
 -- Vysvetleni dotazu s indexy
 EXPLAIN PLAN SET STATEMENT_ID = 'st_datum_odletu' FOR
@@ -326,20 +326,20 @@ SELECT PLAN_TABLE_OUTPUT
   FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'st_datum_odletu','TYPICAL'));
 
 -- Prideleni prav
-grant all on GATE to xwitas00;
-grant all on LET to xwitas00;
-grant all on LETADLO to xwitas00;
-grant all on LETENKA to xwitas00;
-grant all on MISTO to xwitas00;
-grant all on PALUBNI_VSTUPENKA to xwitas00;
-grant all on TERMINAL to xwitas00;
-grant all on TRIDA to xwitas00;
-grant all on TYP_LETADLA to xwitas00;
-grant all on TYP_LETADLAGATE to xwitas00;
-grant all on LETENKA_ID_SEQUENCE to xwitas00;
-grant all on MISTO_ID_SEQUENCE to xwitas00;
-grant all on AKTUALIZUJ_DESTINACI to xwitas00;
-grant all on VYTVOR_LETADLO to xwitas00;
+grant all on GATE to xwitas00 with grant option;
+grant all on LET to xwitas00 with grant option;
+grant all on LETADLO to xwitas00 with grant option;
+grant all on LETENKA to xwitas00 with grant option;
+grant all on MISTO to xwitas00 with grant option;
+grant all on PALUBNI_VSTUPENKA to xwitas00 with grant option;
+grant all on TERMINAL to xwitas00 with grant option;
+grant all on TRIDA to xwitas00 with grant option;
+grant all on TYP_LETADLA to xwitas00 with grant option;
+grant all on TYP_LETADLAGATE to xwitas00 with grant option;
+grant all on LETENKA_ID_SEQUENCE to xwitas00 with grant option;
+grant all on MISTO_ID_SEQUENCE to xwitas00 with grant option;
+grant all on AKTUALIZUJ_DESTINACI to xwitas00 with grant option;
+grant all on VYTVOR_LETADLO to xwitas00 with grant option;
 
 create materialized view log on LETENKA with rowid including new values;
 create materialized view log on LET with rowid including new values;
