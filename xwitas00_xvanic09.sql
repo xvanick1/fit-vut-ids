@@ -1,6 +1,7 @@
-DROP MATERIALIZED VIEW letenka_Vstupenka;
-DROP MATERIALIZED VIEW LOG ON PALUBNI_VSTUPENKA;
-DROP MATERIALIZED VIEW LOG ON LETENKA;DROP SEQUENCE MISTO_ID_SEQUENCE;
+DROP MATERIALIZED VIEW letenka_let;
+DROP MATERIALIZED VIEW LOG ON LET;
+DROP MATERIALIZED VIEW LOG ON LETENKA;
+DROP SEQUENCE MISTO_ID_SEQUENCE;
 DROP SEQUENCE LETENKA_ID_SEQUENCE;
 DROP TABLE Typ_LetadlaGate;
 DROP TABLE Palubni_vstupenka;
@@ -342,9 +343,9 @@ grant all on VYTVOR_LETADLO to xwitas00;
 grant all on MLOG$_LETENKA to xwitas00;
 
 create materialized view log on LETENKA with rowid;
-create materialized view log on PALUBNI_VSTUPENKA with rowid;
+create materialized view log on LET with rowid;
 
-create materialized view Letenka_Vstupenka
+create materialized view Letenka_let
   nologging
   cache
   build immediate
@@ -352,12 +353,12 @@ create materialized view Letenka_Vstupenka
   enable query rewrite
   as
     -- Vypise cestujici vcetne letu a mista
-    SELECT l.jmeno, l.prijmeni, l.id_letu, l.id_letenky, pv.id_mista, pv.id_palubni_vstupenky, l.rowid as letenka_rowid, pv.rowid as palubni_Vstupenka_rowid FROM Letenka l INNER JOIN Palubni_vstupenka pv ON l.id_letenky = pv.id_letenky;
+    SELECT jmeno, prijmeni, destinace, datum_odletu, cas_odletu, id_letu, let.rowid as let_rowid, letenka.rowid as letenka_rowid FROM Letenka NATURAL JOIN Let;
 
-SELECT * FROM Letenka_Vstupenka;
+SELECT * FROM Letenka_let WHERE id_letu = 1;
 
 -- Vlozeni noveho cestujiciho
-INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Maria','Terezia',1,2);
+INSERT INTO Letenka (jmeno, prijmeni, id_letu, id_tridy) VALUES ('Maria','Terezia Nova',1,2);
 
 COMMIT;
-SELECT * FROM Letenka_Vstupenka;
+SELECT * FROM Letenka_let WHERE id_letu = 1;
